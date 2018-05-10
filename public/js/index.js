@@ -1,5 +1,21 @@
 var socket = io();
 
+  function scrollToButton() {
+    //selectors
+    var messages = jQuery('#message');
+    var newMessage = messages.children('li:last-child');
+    //height
+    var clientHeight = messages.prop('clientHeight');
+    var scrollTop = messages.prop('scrollTop');
+    var scrollHeight = messages.prop('scrollHeight');
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight();
+
+    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+      messages.scrollTop(scrollHeight);
+    }
+  }
+
 socket.on('connect', function() {
   console.log("connected to server");
 });
@@ -19,7 +35,7 @@ socket.on('newMessage', function(message) {
   });
 
   jQuery('#message').append(html);
-
+  scrollToButton();
   // console.log("newMessage", message);
   // var li = jQuery('<li></li>');
   // li.text(`${message.from}: ${message.text}  --${formattedTime}`);
@@ -44,16 +60,16 @@ socket.on('newMessage', function(message) {
     // a.attr('href', message.url);
     // li.append(a);
     // jQuery('#message').append(li);
-
+    scrollToButton();
   });
 
 
-socket.emit('createMessage', {
-  from: 'Frank',
-  text: 'hi!'
-}, function(data) {
-  console.log('Got it', data);
-});
+// socket.emit('createMessage', {
+//   from: 'Frank',
+//   text: 'hi!'
+// }, function(data) {
+//   console.log('Got it', data);
+// });
 
 jQuery('#message-form').on('submit', function(e){
   e.preventDefault();
